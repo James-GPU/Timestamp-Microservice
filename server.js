@@ -29,7 +29,7 @@ app.get("/api/:date_string",function(req,res){
   //console.log(req);
   let date = req.params.date_string;//string value of date, we get the data from req, specifically in params with the date_string included
   //https://www.geeksforgeeks.org/express-js-req-params-property/
-  if(parseInt(date) > 0){
+  if(parseInt(date) > 5000){//if the year is less than year 5000, it will print
     let time = new Date(parseInt(date));
     res.json({
       "unix":time.getTime(),//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
@@ -38,11 +38,22 @@ app.get("/api/:date_string",function(req,res){
   }
   
   let check = new Date(date);//checks if the date is valid. If not, then the date is converted.
-    res.json({
+  if(check == "Invalid Date")res.json({"error" : "Invalid Date"});//if there is an error, we print out this message
+  else{
+  res.json({//converts the date into usable data
       "unix": check.getTime(),
       "utc": check.toUTCString()
       })
+   }
   });
+
+app.get("/api/",function(req,res){//this is when there is no input given
+  let current = new Date(); //gets the current date
+  res.json({//same concept but we just use the current date
+    "unix":current.getTime(),
+    "utc": current.toUTCString()
+    });
+  })
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
